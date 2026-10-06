@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>HTML, CSS, JavaScript</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b12">
+
+  <title>Bac Bo Analyzer — Análise Estatística</title>
+  <meta
+    name="description"
+    content="Bac Bo Analyzer — análise estatística, histórico, sinais e backtesting."
+  >
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🎲</div>
+      <div>
+        <h1>Bac Bo Analyzer</h1>
+        <span>Análise estatística • Histórico • Backtesting</span>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="status-dot"></span>
+      Modo Manual
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- STATS -->
+    <section class="stats-grid">
+
+      <div class="stat-card">
+        <span>Total de rondas</span>
+        <strong id="totalRounds">0</strong>
+      </div>
+
+      <div class="stat-card player">
+        <span>Player</span>
+        <strong id="playerPercent">0%</strong>
+        <small id="playerCount">0 rondas</small>
+      </div>
+
+      <div class="stat-card banker">
+        <span>Banker</span>
+        <strong id="bankerPercent">0%</strong>
+        <small id="bankerCount">0 rondas</small>
+      </div>
+
+      <div class="stat-card tie">
+        <span>Tie</span>
+        <strong id="tiePercent">0%</strong>
+        <small id="tieCount">0 rondas</small>
+      </div>
+
+    </section>
+
+    <!-- MANUAL INPUT -->
+    <section class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>Adicionar resultado</h2>
+          <p>Introduza manualmente o resultado da ronda.</p>
+        </div>
+      </div>
+
+      <div class="result-buttons">
+
+        <button class="result-btn player-btn" onclick="addResult('P')">
+          <span>PLAYER</span>
+          <small>Adicionar Player</small>
+        </button>
+
+        <button class="result-btn banker-btn" onclick="addResult('B')">
+          <span>BANKER</span>
+          <small>Adicionar Banker</small>
+        </button>
+
+        <button class="result-btn tie-btn" onclick="addResult('T')">
+          <span>TIE</span>
+          <small>Adicionar Tie</small>
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- DICE -->
+    <section class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>Entrada pelos dados</h2>
+          <p>Introduza os dois dados do Player e os dois do Banker.</p>
+        </div>
+      </div>
+
+      <div class="dice-grid">
+
+        <div class="dice-group player-group">
+          <h3>Player</h3>
+
+          <div class="dice-inputs">
+            <input id="playerDie1" type="number" min="1" max="6" placeholder="1">
+            <input id="playerDie2" type="number" min="1" max="6" placeholder="1">
+          </div>
+        </div>
+
+        <div class="dice-group banker-group">
+          <h3>Banker</h3>
+
+          <div class="dice-inputs">
+            <input id="bankerDie1" type="number" min="1" max="6" placeholder="1">
+            <input id="bankerDie2" type="number" min="1" max="6" placeholder="1">
+          </div>
+        </div>
+
+      </div>
+
+      <button class="primary-btn" onclick="addDiceResult()">
+        + Adicionar ronda pelos dados
+      </button>
+
+      <div id="diceMessage" class="message"></div>
+
+    </section>
+
+    <!-- SIGNAL -->
+    <section class="signal-card">
+
+      <div class="signal-header">
+        <div>
+          <span class="eyebrow">SINAL ESTATÍSTICO</span>
+          <h2 id="signal">AGUARDAR</h2>
+        </div>
+
+        <div class="confidence-box">
+          <span>Confiança</span>
+          <strong id="confidence">0%</strong>
+        </div>
+      </div>
+
+      <div class="confidence-track">
+        <div id="confidenceBar"></div>
+      </div>
+
+      <p id="signalReason">
+        Adicione rondas para gerar uma análise.
+      </p>
+
+    </section>
+
+    <!-- ANALYSIS -->
+    <section class="two-columns">
+
+      <div class="card">
+
+        <div class="section-title">
+          <div>
+            <h2>Streak atual</h2>
+            <p>Sequência atual de resultados.</p>
+          </div>
+        </div>
+
+        <div class="streak-display">
+          <strong id="currentStreak">—</strong>
+          <span id="currentStreakCount">0 rondas</span>
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <div class="section-title">
+          <div>
+            <h2>Máximas sequências</h2>
+            <p>Maior sequência encontrada no histórico.</p>
+          </div>
+        </div>
+
+        <div class="max-streaks">
+
+          <div>
+            <span>Player</span>
+            <strong id="maxPlayer">0</strong>
+          </div>
+
+          <div>
+            <span>Banker</span>
+            <strong id="maxBanker">0</strong>
+          </div>
+
+          <div>
+            <span>Tie</span>
+            <strong id="maxTie">0</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ROAD -->
+    <section class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>Road</h2>
+          <p>Representação visual das últimas rondas.</p>
+        </div>
+      </div>
+
+      <div id="road" class="road"></div>
+
+    </section>
+
+    <!-- RECENT ANALYSIS -->
+    <section class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>Análise recente</h2>
+          <p>Distribuição dos últimos resultados.</p>
+        </div>
+      </div>
+
+      <div class="recent-grid">
+
+        <div class="recent-item">
+          <span>Últimas 10</span>
+          <strong id="recent10">—</strong>
+        </div>
+
+        <div class="recent-item">
+          <span>Últimas 20</span>
+          <strong id="recent20">—</strong>
+        </div>
+
+        <div class="recent-item">
+          <span>Últimas 50</span>
+          <strong id="recent50">—</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- MODEL -->
+    <section class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>Configuração do modelo</h2>
+          <p>Ajuste a janela utilizada pela análise estatística.</p>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+
+        <label>
+          Janela de análise
+          <input
+            id="modelWindow"
+            type="number"
+            min="8"
+            max="200"
+            value="25"
+          >
+        </label>
+
+        <label>
+          Confiança mínima
+          <input
+            id="minimumConfidence"
+            type="number"
+            min="50"
+            max="99"
+            value="51"
+          >
+        </label>
+
+      </div>
+
+      <button class="primary-btn" onclick="render()">
+        Aplicar configuração
+      </button>
+
+    </section>
+
+    <!-- BACKTEST -->
+    <section class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>Backtesting</h2>
+          <p>
+            Teste como o modelo teria funcionado sobre o histórico introduzido.
+          </p>
+        </div>
+      </div>
+
+      <button class="primary-btn" onclick="runBacktest()">
+        Executar Backtest
+      </button>
+
+      <div id="backtestResult" class="backtest-result">
+        Nenhum backtest executado.
+      </div>
+
+    </section>
+
+    <!-- HISTORY -->
+    <section class="card">
+
+      <div class="section-title history-title">
+
+        <div>
+          <h2>Histórico</h2>
+          <p>Últimas 30 rondas registadas.</p>
+        </div>
+
+        <div class="history-actions">
+          <button class="secondary-btn" onclick="importHistory()">
+            Importar
+          </button>
+
+          <button class="secondary-btn" onclick="exportHistory()">
+            Exportar
+          </button>
+
+          <button class="danger-btn" onclick="deleteAll()">
+            Apagar tudo
+          </button>
+        </div>
+
+      </div>
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Resultado</th>
+              <th>Dados</th>
+              <th>Total</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+
+          <tbody id="historyTable"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+    <!-- LAST RESULTS -->
+    <section class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>Últimas 20 rondas</h2>
+          <p>Sequência mais recente.</p>
+        </div>
+      </div>
+
+      <div id="last20" class="last20"></div>
+
+    </section>
+
+    <!-- DISCLAIMER -->
+    <section class="disclaimer">
+
+      <strong>⚠️ Aviso importante</strong>
+
+      <p>
+        O Bac Bo Analyzer apresenta análises estatísticas baseadas apenas
+        nos dados introduzidos pelo utilizador. Os sinais não são previsões
+        garantidas e não eliminam o risco associado a jogos de azar.
+      </p>
+
+      <p>
+        Resultados anteriores não garantem resultados futuros.
+        Utilize esta ferramenta apenas para análise e estudo.
+      </p>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Bac Bo Analyzer</span>
+    <span>•</span>
+    <span>Modo Manual</span>
+  </footer>
+
+  <input
+    id="importFile"
+    type="file"
+    accept=".json"
+    style="display:none"
+  >
+
+  <script src="app.js"></script>
+
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
